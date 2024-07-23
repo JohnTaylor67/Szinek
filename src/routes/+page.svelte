@@ -1,36 +1,94 @@
 <script>
-    import { onMount } from 'svelte';
-    import chroma from 'chroma-js';
-  
-    let baseColor = '#3498db'; // Alapértelmezett szín
-    let selectedHarmony = 'complementary'; // Alapértelmezett harmónia típusa
-    let harmonyColors = [];
-  
-    function calculateHarmony(base, type) {
-      switch (type) {
-        case 'complementary':
-          return [base, chroma(base).set('hsl.h', '+180').css()];
-        case 'analogous':
-          return [base, chroma(base).set('hsl.h', '-30').css(), chroma(base).set('hsl.h', '+30').css()];
-        case 'triadic':
-          return [base, chroma(base).set('hsl.h', '+120').css(), chroma(base).set('hsl.h', '+240').css()];
-        case 'split-complementary':
-          return [base, chroma(base).set('hsl.h', '+150').css(), chroma(base).set('hsl.h', '-150').css()];
-        case 'square':
-          return [base, chroma(base).set('hsl.h', '+90').css(), chroma(base).set('hsl.h', '+180').css(), chroma(base).set('hsl.h', '+270').css()];
-        case 'tetradic':
-          return [base, chroma(base).set('hsl.h', '+90').css(), chroma(base).set('hsl.h', '+180').css(), chroma(base).set('hsl.h', '+270').css()];
-        default:
-          return [base];
-      }
+  import { onMount } from 'svelte';
+  import chroma from 'chroma-js';
+
+  let baseColor = '#3498db'; // Alapértelmezett szín
+  let selectedHarmony = 'complementary'; // Alapértelmezett harmónia típusa
+  let harmonyColors = [];
+  let canvas, ctx; // Canvas és context referenciák
+
+  // Színharmóniák kiszámítása
+  function calculateHarmony(base, type) {
+    switch (type) {
+      case 'complementary':
+        return [base, chroma(base).set('hsl.h', '+180').css()];
+      case 'analogous':
+        return [base, chroma(base).set('hsl.h', '-30').css(), chroma(base).set('hsl.h', '+30').css()];
+      case 'triadic':
+        return [base, chroma(base).set('hsl.h', '+120').css(), chroma(base).set('hsl.h', '+240').css()];
+      case 'split-complementary':
+        return [base, chroma(base).set('hsl.h', '+150').css(), chroma(base).set('hsl.h', '-150').css()];
+      case 'square':
+        return [base, chroma(base).set('hsl.h', '+90').css(), chroma(base).set('hsl.h', '+180').css(), chroma(base).set('hsl.h', '+270').css()];
+      case 'tetradic':
+        return [base, chroma(base).set('hsl.h', '+90').css(), chroma(base).set('hsl.h', '+180').css(), chroma(base).set('hsl.h', '+270').css()];
+      default:
+        return [base];
     }
-  
-    onMount(() => {
+  }
+
+  onMount(() => {
+    canvas = document.getElementById('colorWheel');
+    if (canvas) {
+      ctx = canvas.getContext('2d');
+      drawColorWheel();
       harmonyColors = calculateHarmony(baseColor, selectedHarmony);
+      highlightColors(harmonyColors);
+    }
+  });
+
+  $: harmonyColors = calculateHarmony(baseColor, selectedHarmony);
+ 
+
+
+
+
+  $: if (ctx && harmonyColors) {
+    highlightColors(harmonyColors);
+  }
+
+  function drawColorWheel() {
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = Math.min(centerX, centerY) * 0.8; // Például a sugár 40%-a a kisebbik középponti értéknek
+
+    for (let angle = 0; angle < 360; angle++) {
+        const startAngle = (angle - 1) * Math.PI / 180;
+        const endAngle = angle * Math.PI / 180;
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+        ctx.closePath();
+        ctx.fillStyle = `hsl(${angle}, 100%, 50%)`;
+        ctx.fill();
+    }
+}
+
+
+function highlightColors(colors) {
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = Math.min(centerX, centerY) * 0.8; // Ugyanaz a sugár, mint a színkörhöz
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawColorWheel();
+
+    colors.forEach(color => {
+        const hue = chroma(color).hsl()[0];
+        const angle = hue * Math.PI / 180;
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius - 5, angle - 0.05, angle + 0.05); // Kis csökkentés a kiemeléshez
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.fill();
     });
-  
-    $: harmonyColors = calculateHarmony(baseColor, selectedHarmony);
-  </script>
+}
+
+</script>
+
+
+
   
   <style>
     html, body {
@@ -50,7 +108,7 @@
     .container {
       display: flex;
       flex: 1;
-      padding: 20px;
+      padding: 0px;
       background-color: #f0f0f0;
       width: 100%;
     }
@@ -109,6 +167,17 @@
       </select>
     </div>
   
+
+  
+    <div class="column">
+      <label for="baseColor">Kiinduló szín:</label>
+      <input type="color" id="baseColor" bind:value={baseColor}>
+    </div>
+    <div class="column">
+      <canvas id="colorWheel" width="300" height="300" style="border:1px solid #ccc;"></canvas>
+  
+    </div>
+  
     <div class="column color-samples">
       {#each harmonyColors as color}
         <div>
@@ -117,10 +186,7 @@
         </div>
       {/each}
     </div>
-  
-    <div class="column">
-      <label for="baseColor">Kiinduló szín:</label>
-      <input type="color" id="baseColor" bind:value={baseColor}>
-    </div>
+
+
   </div>
-  
+

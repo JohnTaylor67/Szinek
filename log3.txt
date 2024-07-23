@@ -1,0 +1,12 @@
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+Warning: commit message did not conform to UTF-8.
+You may want to amend it after fixing the message, or set the config
+variable i18n.commitEncoding to the encoding your project uses.
+[master 94ba072] törlés 1 fille
+ 4 files changed, 2 insertions(+), 59 deletions(-)
+ create mode 100644 Commit.txt
+ create mode 100644 log3.txt
+ delete mode 100644 src/routes/ColorHarmony.svelte
+branch 'master' set up to track 'origin/master'.
+To https://github.com/JohnTaylor67/Szinek.git
+   b15355f..94ba072  master -> master

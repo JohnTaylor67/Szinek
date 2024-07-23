@@ -90,65 +90,73 @@ function highlightColors(colors) {
 
 
   
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-    }
+<style>
+  :global(html, body) {
+    height: 100%; /* Ez biztosítja, hogy a html és a body elem teljes magasságú legyen */
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Eltávolítja a görgetési lehetőséget */
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    background-color: #e6e6e6;
+    padding: 10px 20px;
+    text-align: center;
+  }
+
+  .container {
+    display: flex;
+    flex: 1 1 auto; /* Növeli a flexibilitást, hogy kitöltse a maradék helyet */
+    padding: 0;
+    background-color: #f0f0f0;
+    width: 100vw; /* Biztosítja, hogy teljes szélességű legyen */
+    max-width: 100%; /* Megakadályozza a konténer szélességének túlcsordulását */
+    overflow: hidden; /* Eltávolítja a görgetési lehetőséget */
+  }
+
+  .column {
+    flex: 1;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
+    background-color: #dcdcdc;
+    border-radius: 8px;
+    border: 1px solid #f0f0f0;
+  }
+  .color-samples {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-start;
+    flex: 1; 
+    overflow-y: auto; 
+  }
+
+  .color-sample {
+    width: 60px;
+    height: 60px;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .color-code {
+    font-size: 12px;
+    font-family: monospace;
+    text-align: center;
+    padding-top: 5px;
+  }
   
-    header {
-      background-color: #e6e6e6;
-      padding: 10px 20px;
-      text-align: center;
-    }
   
-    .container {
-      display: flex;
-      flex: 1;
-      padding: 0px;
-      background-color: #f0f0f0;
-      width: 100%;
-    }
   
-    .column {
-      flex: 1;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      margin: 5px;
-      background-color: #dcdcdc;
-      border-radius: 8px;
-      border: 1px solid #f0f0f0;
-    }
-  
-    .color-samples {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: flex-start;
-      flex: 1;
-    }
-  
-    .color-sample {
-      width: 60px;
-      height: 60px;
-      border: 1px solid #eee;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-  
-    .color-code {
-      font-size: 12px;
-      font-family: monospace;
-      text-align: center;
-      padding-top: 5px;
-    }
-  </style>
+</style>
+
+
   
   <header>
     <h1>Színharmónia Generátor</h1>
